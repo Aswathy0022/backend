@@ -1,5 +1,20 @@
+require("dotenv").config();
 const express = require("express");
-const userroute=require("./routes/user")
+const { connect } = require("./config/dbConfig");
+const userroute = require("./routes/user");
+const productRouter = require("./routes/product");
+
 const app = express();
-app.use(userroute)
-app.listen(3000, function() {console.log("sever running")})
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(userroute);
+app.use(productRouter);
+app.listen(3001, async function () {
+  try {
+    await connect();
+  } catch (error) {
+    console.error("Unable to connect mongodb", error.message);
+  }
+  console.log("sever running");
+});
